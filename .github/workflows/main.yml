@@ -1,0 +1,30 @@
+name: CI-CD
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v1
+
+      - name: Mark executable sh
+        run: chmod +x .platform/hooks/prebuild/*.sh && chmod +x .platform/hooks/predeploy/*.sh && chmod +x .platform/hooks/postdeploy/*.sh
+
+      - name: Generate deployment package
+        run: zip application.zip -r * .[^.]* -x 'vendor/*' -x '.idea/*' -x '.git/*'
+
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v14
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: ${{ secrets.APPLICATION_NAME }}
+          environment_name: api-php-contacts
+          version_label: ${{ github.sha }}
+          region: ${{ secrets.AWS_DEFAULT_REGION }}
+          deployment_package: application.zip
