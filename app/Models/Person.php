@@ -15,7 +15,7 @@ class Person extends Model implements Transformable
     use UuidTrait;
 
     public $timestamps = false;
-    protected $table = 'public.persons';
+    protected $table = 'persons';
     protected $primaryKey = 'id';
     protected $keyType = 'string';
     /**

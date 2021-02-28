@@ -15,7 +15,7 @@ class Contact extends Model implements Transformable
     use UuidTrait;
 
     public $timestamps = false;
-    protected $table = 'public.contacts';
+    protected $table = 'contacts';
     protected $primaryKey = 'id';
     protected $keyType = 'string';
     /**
